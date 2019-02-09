@@ -12,7 +12,7 @@ This is the example project for testing your FaaS function locally using AWS SAM
 - Do almost everyting on local & make your development cycle faster.
 - Decouple your function code from the cloud pratform by dependency injection
 
-The strategy I adopted is basically inspired by [the slide](https://speakerdeck.com/twada/testable-lambda-working-effectively-with-legacy-lambda) by Takuto Wada. I wrote the test code mostly based on the article.
+The strategy I adopted is based on [the slide](https://speakerdeck.com/twada/testable-lambda-working-effectively-with-legacy-lambda) by Takuto Wada. I wrote the test code mostly based on the article.
 
 ## Direcotry Structure
 
