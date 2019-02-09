@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-localstack-example
+
+  Sample SAM Template for sam-localstack-example
+
+Parameters:
+  NameTagPrefix:
+    Type: String
+    Default: sam-localstack-example
+    Description: Prefix of Name tags.
+  Stage:
+    Type: String
+    AllowedValues:
+      - prd
+      - stg
+      - dev
+    Default: dev
+
+Mappings:
+  EnvMap:
+    prd:
+      S3Bucket: '(set your s3 bucket name in the production environment)'
+    stg:
+      S3Bucket: '(set your s3 bucket name in the staging environment)'
+    dev:
+      S3Bucket: '(set your s3 bucket name in the development environment)'
+
+Globals:
+  Function:
+    Timeout: 3
+    Environment:
+      Variables:
+        NODE_PATH: /opt/nodejs/node8/lib:/opt/nodejs/lib:/opt/nodejs/node8/node_modules/:/opt/nodejs/node_modules:$LAMBDA_RUNTIME_DIR/node_modules
+
+Resources:
+
+  #
+  # Lambda Functions
+  #
+  ParseMailHeaderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${NameTagPrefix}_${Stage}_parseMailHeader
+      CodeUri: parseMailHeader/
+      Handler: app.lambdaHandler
+      Runtime: nodejs8.10
+      Layers:
+        - !Ref ModulesLayer
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !FindInMap [ EnvMap, !Ref Stage, S3Bucket ]
+
+  #
+  # CloudWatch Log Groups
+  #
+  ParseMailHeaderFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${ParseMailHeaderFunction}
+      RetentionInDays: 14
+
+  #
+  # Lambda Layers
+  #
+  ModulesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: Dependency modules Layer
+      ContentUri: ../layer
