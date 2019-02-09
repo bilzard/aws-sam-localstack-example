@@ -1,0 +1,20 @@
+{
+  "name": "shared-lib",
+  "version": "1.0.0",
+  "description": "shared library for lamblda layer",
+  "main": "",
+  "repository": "",
+  "author": "SAM CLI",
+  "license": "MIT",
+  "dependencies": {
+    "mailparser": "^2.4.3"
+  },
+  "scripts": {
+    "test": "mocha --recursive tests/unit/**/"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.397.0",
+    "mocha": "^5.2.0",
+    "power-assert": "^1.6.1"
+  }
+}
