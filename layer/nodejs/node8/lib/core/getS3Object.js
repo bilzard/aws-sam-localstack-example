@@ -1,10 +1,7 @@
-'use strict';
-
-
 module.exports = async ({ s3, bucket, key }) => {
   const params = {
     Bucket: bucket,
-    Key: key
+    Key: key,
   };
   const ret = await s3.getObject(params).promise();
   const message = ret.Body.toString();

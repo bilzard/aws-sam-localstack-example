@@ -1,6 +1,4 @@
-'use strict';
-
-const simpleParser = require('mailparser').simpleParser;
+const { simpleParser } = require('mailparser');
 
 module.exports = async ({ message }) => {
   const parsed = await simpleParser(message);

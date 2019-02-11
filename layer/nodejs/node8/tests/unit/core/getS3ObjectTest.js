@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-env mocha */
 
 const fs = require('fs');
 const path = require('path');
@@ -6,13 +6,13 @@ const AWS = require('aws-sdk');
 const assert = require('power-assert');
 const getS3Object = require('core/getS3Object');
 
-const credentials = new AWS.SharedIniFileCredentials({profile: 'localstack'});
+const credentials = new AWS.SharedIniFileCredentials({ profile: 'localstack' });
 AWS.config.credentials = credentials;
 
 const config = {
   endpoint: 'http://localhost:4572',
   s3ForcePathStyle: 'true',
-}
+};
 const s3 = new AWS.S3(config);
 
 /*
@@ -20,7 +20,8 @@ const s3 = new AWS.S3(config);
  */
 describe('core/getS3Object test suit #1', () => {
   // shared variables over the test suit
-  let bucket, key;
+  let bucket;
+  let key;
 
   /*
    * starup
@@ -31,7 +32,7 @@ describe('core/getS3Object test suit #1', () => {
     bucket = `test-bucket-${now}`;
     key = `message_${now}.txt`;
     // create bucket & bucket key
-    await s3.createBucket({Bucket: bucket}).promise();
+    await s3.createBucket({ Bucket: bucket }).promise();
     await s3.putObject({
       Bucket: bucket,
       Key: key,
@@ -44,19 +45,19 @@ describe('core/getS3Object test suit #1', () => {
    * test cases
   */
   it('successfully get an object from S3 bucket', async () => {
-    const message = await getS3Object({s3, bucket, key});
+    const message = await getS3Object({ s3, bucket, key });
     assert.equal(message, 'Hi, there.\n');
   });
 
   it('throw error if access to non-existent key', async () => {
-    await getS3Object({s3, bucket, key: 'non-existent' }).catch((error) => {
+    await getS3Object({ s3, bucket, key: 'non-existent' }).catch((error) => {
       assert.equal(error.name, 'NoSuchKey');
       assert.equal(error.message, 'The specified key does not exist.');
     });
   });
 
   it('throw error if access to non-existent bucket', async () => {
-    await getS3Object({s3, bucket: 'non-existent', key: 'non-existent' }).catch((error) => {
+    await getS3Object({ s3, bucket: 'non-existent', key: 'non-existent' }).catch((error) => {
       assert.equal(error.name, 'NoSuchBucket');
       assert.equal(error.message, 'The specified bucket does not exist');
     });
@@ -71,6 +72,6 @@ describe('core/getS3Object test suit #1', () => {
       Bucket: bucket,
       Key: key,
     }).promise();
-    await s3.deleteBucket({Bucket: bucket}).promise();
+    await s3.deleteBucket({ Bucket: bucket }).promise();
   });
 });

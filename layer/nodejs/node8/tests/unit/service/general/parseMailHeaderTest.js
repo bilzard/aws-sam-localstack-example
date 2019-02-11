@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-env mocha */
 
 const fs = require('fs');
 const path = require('path');
@@ -6,13 +6,13 @@ const AWS = require('aws-sdk');
 const assert = require('power-assert');
 const parseMailHeader = require('service/general/parseMailHeader');
 
-const credentials = new AWS.SharedIniFileCredentials({profile: 'localstack'});
+const credentials = new AWS.SharedIniFileCredentials({ profile: 'localstack' });
 AWS.config.credentials = credentials;
 
 const config = {
   endpoint: 'http://localhost:4572',
   s3ForcePathStyle: 'true',
-}
+};
 const s3 = new AWS.S3(config);
 
 /*
@@ -36,12 +36,12 @@ describe('service/general/parseMailHeader test suit', () => {
       Key: key,
     };
     // create bucket & bucket key
-    await s3.createBucket({Bucket: bucket}).promise();
+    await s3.createBucket({ Bucket: bucket }).promise();
     await s3.putObject({
       Bucket: bucket,
       Key: key,
       ContentType: 'text/plain',
-      Body: fs.readFileSync(path.join(__dirname, '..', '..', '..','fixture', 'mail', 'message.txt')),
+      Body: fs.readFileSync(path.join(__dirname, '..', '..', '..', 'fixture', 'mail', 'message.txt')),
     }).promise();
   });
 
@@ -49,7 +49,9 @@ describe('service/general/parseMailHeader test suit', () => {
    * test cases
   */
   it('successfully parse message', async () => {
-    const message = await parseMailHeader({s3, event, context, callback});
+    const message = await parseMailHeader({
+      s3, event, callback,
+    });
     assert.deepEqual(message, {
       MailHeader: {
         From: {
@@ -66,28 +68,28 @@ describe('service/general/parseMailHeader test suit', () => {
   });
 
   it('throw error if the key "Bucket" doesn\'t exist', async () => {
-    await parseMailHeader({s3, event: { Key: event.Key }, context, callback }).catch((error) => {
+    await parseMailHeader({ s3, event: { Key: event.Key }, callback }).catch((error) => {
       assert.strictEqual(error.name, 'MissingRequiredParameter');
       assert.strictEqual(error.message, 'Missing required key \'Bucket\' in params');
     });
   });
 
   it('throw error if the key "Key" doesn\'t exist', async () => {
-    await parseMailHeader({s3, event: { Bucket: event.Bucket }, context, callback }).catch((error) => {
+    await parseMailHeader({ s3, event: { Bucket: event.Bucket }, callback }).catch((error) => {
       assert.strictEqual(error.name, 'MissingRequiredParameter');
       assert.strictEqual(error.message, 'Missing required key \'Key\' in params');
     });
   });
 
   it('throw error if access to non-existent key', async () => {
-    await parseMailHeader({s3, event: { Bucket: event.Bucket, Key: 'non-existent' }, context, callback }).catch((error) => {
+    await parseMailHeader({ s3, event: { Bucket: event.Bucket, Key: 'non-existent' }, callback }).catch((error) => {
       assert.equal(error.name, 'NoSuchKey');
       assert.equal(error.message, 'The specified key does not exist.');
     });
   });
 
   it('throw error if access to non-existent bucket', async () => {
-    await parseMailHeader({s3, event: { Bucket: 'non-existent', Key: 'non-existent' }, context, callback }).catch((error) => {
+    await parseMailHeader({ s3, event: { Bucket: 'non-existent', Key: 'non-existent' }, callback }).catch((error) => {
       assert.equal(error.name, 'NoSuchBucket');
       assert.equal(error.message, 'The specified bucket does not exist');
     });

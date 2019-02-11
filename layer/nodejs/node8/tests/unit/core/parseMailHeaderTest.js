@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-env mocha */
 
 const fs = require('fs');
 const path = require('path');
@@ -27,9 +27,9 @@ describe('core/parseMailHeader test suit', () => {
     assert.deepEqual(parsed, {
       From: {
         Address: 'from-address@example.com',
-        Name: 'John Smith'
+        Name: 'John Smith',
       },
-      Subject: 'Greeting Message'
+      Subject: 'Greeting Message',
     });
   });
 });
