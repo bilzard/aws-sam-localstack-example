@@ -15,6 +15,7 @@
   "devDependencies": {
     "aws-sdk": "^2.397.0",
     "mocha": "^5.2.0",
+    "nyc": "^13.2.0",
     "power-assert": "^1.6.1"
   }
 }
