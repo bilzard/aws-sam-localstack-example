@@ -71,12 +71,20 @@ cd localstack
 docker compose up -d
 ```
 
-### Run Unit Test
+### Run Unit Test (manually)
 
 ```
 cd layer/nodejs/node8
 yarn install
 yarn test
+```
+
+### Run Unit Text (automatically)
+
+If you want to run test codes anytime you make changes:
+
+```
+yarn watch
 ```
 
 ## AWS SAM Project
