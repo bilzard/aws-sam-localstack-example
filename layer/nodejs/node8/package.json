@@ -10,12 +10,14 @@
     "mailparser": "^2.4.3"
   },
   "scripts": {
-    "test": "nyc -r lcovonly -r text mocha --recursive tests/unit/**/"
+    "test": "nyc -r lcovonly -r text mocha --recursive tests/unit/**/",
+    "watch": "onchange lib/**/*.js tests/unit/**/*.js -- yarn test"
   },
   "devDependencies": {
     "aws-sdk": "^2.397.0",
     "mocha": "^5.2.0",
     "nyc": "^13.2.0",
+    "onchange": "^5.2.0",
     "power-assert": "^1.6.1"
   }
 }
