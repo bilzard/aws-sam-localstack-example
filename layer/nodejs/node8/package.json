@@ -10,7 +10,7 @@
     "mailparser": "^2.4.3"
   },
   "scripts": {
-    "test": "mocha --recursive tests/unit/**/"
+    "test": "nyc -r lcovonly -r text mocha --recursive tests/unit/**/"
   },
   "devDependencies": {
     "aws-sdk": "^2.397.0",
