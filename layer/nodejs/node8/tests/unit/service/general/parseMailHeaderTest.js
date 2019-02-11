@@ -65,7 +65,19 @@ describe('service/general/parseMailHeader test suit', () => {
     });
   });
 
-  // TODO: write text cases for parameter check
+  it('throw error if the key "Bucket" doesn\'t exist', async () => {
+    await parseMailHeader({s3, event: { Key: event.Key }, context, callback }).catch((error) => {
+      assert.strictEqual(error.name, 'MissingRequiredParameter');
+      assert.strictEqual(error.message, 'Missing required key \'Bucket\' in params');
+    });
+  });
+
+  it('throw error if the key "Key" doesn\'t exist', async () => {
+    await parseMailHeader({s3, event: { Bucket: event.Bucket }, context, callback }).catch((error) => {
+      assert.strictEqual(error.name, 'MissingRequiredParameter');
+      assert.strictEqual(error.message, 'Missing required key \'Key\' in params');
+    });
+  });
 
   it('throw error if access to non-existent key', async () => {
     await parseMailHeader({s3, event: { Bucket: event.Bucket, Key: 'non-existent' }, context, callback }).catch((error) => {
