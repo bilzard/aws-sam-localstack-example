@@ -6,13 +6,16 @@
   "repository": "",
   "author": "SAM CLI",
   "license": "MIT",
+  "directories": {
+    "test": "tests/"
+  },
   "dependencies": {
     "aws-sdk": "^2.400.0",
     "mailparser": "^2.4.3"
   },
   "scripts": {
     "lint": "eslint ./",
-    "test": "nyc -r lcovonly -r text mocha --recursive tests/unit/**/",
+    "test": "nyc -r lcovonly -r text mocha --require intelli-espower-loader --recursive tests/unit/**/",
     "watch": "onchange lib/core/*.js lib/service/**/*.js tests/unit/core/*.js tests/unit/service/**/*.js -- yarn test"
   },
   "devDependencies": {
