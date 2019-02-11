@@ -8,8 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.400.0",
-    "mailparser": "^2.4.3",
-    "power-assert": "^1.6.1"
+    "mailparser": "^2.4.3"
   },
   "scripts": {
     "lint": "eslint ./",
@@ -21,8 +20,10 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-mocha": "^5.2.1",
+    "intelli-espower-loader": "^1.0.1",
     "mocha": "^5.2.0",
     "nyc": "^13.2.0",
-    "onchange": "^5.2.0"
+    "onchange": "^5.2.0",
+    "power-assert": "^1.6.1"
   }
 }
