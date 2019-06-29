@@ -1,7 +1,14 @@
 version: '3'
 services:
   localstack:
-    image: localstack/localstack
+    image: "localstack/localstack"
     ports:
-      - 4567-4578:4567-4578
-      - 8080:8080
+      - "4572:4572"
+      - "4584:4584"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - SERVICES=s3,secretsmanager
+      - DEFAULT_REGION=us-west-2
+      - DATA_DIR=/tmp/localstack/data
+      - TMPDIR=/private${TMPDIR- }
