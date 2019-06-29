@@ -1,6 +1,6 @@
 # sam-localstack-example
 
-This is the example project for testing your FaaS function locally using AWS SAM & localstack.
+This is a sample implementation of AWS SAM local test using Localstack.
 
 ## Requirements
 
@@ -9,10 +9,11 @@ This is the example project for testing your FaaS function locally using AWS SAM
 
 ## Basic concept
 
-- Do almost everyting on local & make your development cycle faster.
-- Decouple your function code from the cloud pratform by dependency injection
+- Make development cycles faster by testing locally
+- Keep the Lambda function code loosely coupled from the cloud platform
 
-The strategy I adopted is based on [the slide](https://speakerdeck.com/twada/testable-lambda-working-effectively-with-legacy-lambda) by Takuto Wada. I wrote the test code mostly based on the article.
+This code was implemented based on the test strategy introduced in the following slide by Takuto Wada
+https://speakerdeck.com/twada/testable-lambda-working-effectively-with-legacy-lambda
 
 ## Direcotry Structure
 
@@ -41,12 +42,12 @@ The strategy I adopted is based on [the slide](https://speakerdeck.com/twada/tes
 
 ## Lambda Layer (layer/)
 
-You can place the dependency modules & your own library in `layer/`.
-The resources you put there will be zip & push to the Lambda Layer.
+The Lambda Layer code can be placed in `layer/`.
+The code placed here is zipped by AWS SAM.
 
-### Set localstack's Dummy Credential
+### Set the Dummy Credentials of the Localstack
 
-The proper credentials are unnecessary, but you have to set something, otherwise, the test using localstack will fail.
+Localstack does not work if you have not set the dummy credentials.
 
 ```
 aws configure --profile localstack
@@ -56,15 +57,15 @@ Default region name [None]: us-east-1
 Default output format [None]: json
 ```
 
-### Set Local Environment Variables
+### Setting environment variables
 
-You should set the dependency module's include path in your local computer.
+Set the path where the dependency module has installed.
 
 ```
 export NODE_PATH=(the pass to the repository)/layer/nodejs/node8/lib
 ```
 
-### Run Localstack Docker Container in Background
+### Run the Localstack Docker Container in the Background
 
 ```
 cd localstack
@@ -89,14 +90,11 @@ yarn watch
 
 ## AWS SAM Project
 
-You can place AWS SAM resources in `sam-ploject/`.
-
-`template.yaml` is the SAM template.
-
+SAM resources can be placed in `sam-ploject/`.
 
 ### Setup Environment Variables
 
-You should set your own environment setting in `.env-dev`.
+The setting of the local environment should be described in `.env-dev`.
 
 ```
 # in .env-dev
@@ -108,13 +106,11 @@ export AWS_PROFILE=(set your AWS profile)
 export CFN_STACK_NAME=sam-localstack-example-dev
 ```
 
-You should also set the `S3Bucket` parameter in `template.yaml`.
+Create the S3 Buckets specified for `S3_BUCKET_NAME_FOR_SAM_PACKAGE` and `S3Bucket` in advance.
 
-Be sure the S3 bucket you set in `S3_BUCKET_NAME_FOR_SAM_PACKAGE` and `S3Bucket` to be created before you package & deploy.
+It is necessary to set the information of S3 Bucket that stores the material to be deployed in temlate.yaml.
 
 ### Build
-
-Run `build.sh` script which wraps `sam build` command:
 
 ```
 cd sam-project/script
@@ -123,18 +119,17 @@ sh build.sh
 
 ### Package & Deploy
 
-Run `deploy.sh` script which wraps both `sam package` and `sam deploy` commands:
-
 ```
 cd sam-project/script
 STAGE=dev sh deploy.sh
 ```
 
-## How to Decouple Your Code from the Cloud Platform?
+## Keep Your Code Loosely Coupled to the Cloud Platform
 
-Generally speaking, any dependency in your code on the cloud platform (ex. s3, dynamo DB etc.) prevents your code from local testing. The most orthodox solution is to use the pattern called **dependency injection**.
+If you want to access the managed services from your Lambda functions, local testing will be difficult.
+Use dependency injection to avoid this.
 
-For example, in the test code below, since the function code has dependency on `AWS.S3`, you can't test the function loccally.
+The following code uses S3's client library, so it is difficult to test locally.
 
 ```js
 const AWS = require('aws-sdk');
@@ -151,7 +146,7 @@ exports.lambdaHandler = async (event, context, callback) => {
 };
 ```
 
-But if you fix the funcion code as below:
+However, modifying the code as follows by injecting S3 client from outside, it is possible to replace S3's client library with test code and production code.
 
 ```js
 const AWS = require('aws-sdk');
@@ -163,9 +158,10 @@ exports.lambdaHandler = async (event, context, callback) => {
 };
 ```
 
-The original anonymous function still hard to test, but the new funciton `parseMailHeader` is easy to test, because you can give the dependency (s3) from outside of the function.
 
-Now you can write the test code as below:
+The lambdaHander function's test is still difficult as local, but parseMailHeader function is locally testable.
+
+You can write test code as follows:
 
 ```js
 const AWS = require('aws-sdk');
@@ -182,8 +178,7 @@ it('successfully parse message', async () => {
 });
 ```
 
-The endpoint `http://localhost:4572` is the localstack's mock S3 service.
-Thus, you can switch dependency between production code and test code.
+The endpoint `http://localhost:4572` is a pseudo S3 service endpoint of the local stack.
 
 ## Reference
 
