@@ -90,7 +90,7 @@ yarn watch
 
 ## AWS SAM Project
 
-SAM resources can be placed in `sam-ploject/`.
+SAM resources can be placed in `sam-project/`.
 
 ### Setup Environment Variables
 
