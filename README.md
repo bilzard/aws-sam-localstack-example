@@ -69,7 +69,7 @@ export NODE_PATH=(the pass to the repository)/layer/nodejs/node8/lib
 
 ```
 cd localstack
-docker compose up -d
+docker-compose up -d
 ```
 
 ### Run Unit Test (manually)
